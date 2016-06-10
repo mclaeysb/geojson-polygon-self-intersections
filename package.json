@@ -19,9 +19,6 @@
   "bugs": {
     "url": "https://github.com/mclaeysb/geojson-polygon-self-intersections/issues"
   },
-  "engines": {
-    "node": "4.2.1"
-  },
   "dependencies": {
   },
   "devDependencies": {
