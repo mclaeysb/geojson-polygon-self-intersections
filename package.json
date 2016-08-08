@@ -20,8 +20,8 @@
     "url": "https://github.com/mclaeysb/geojson-polygon-self-intersections/issues"
   },
   "dependencies": {
+    "rbush": "^2.0.1"
   },
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "homepage": "https://github.com/mclaeysb/geojson-polygon-self-intersections#readme"
 }
