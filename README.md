@@ -19,11 +19,11 @@ and use it like so:
 ```javascript
 var gpsi = require('geojson-polygon-self-intersections');
 
-// poly = ...
+// poly = {type: "Feature", geometry: {type: "Polygon", coordinates: [[[1, 10], [11, 13], ...]]}}
 
 var isects = gpsi(poly);
 
-// isects = [[5, 8], [7, 3], ...]
+// isects = {type: "Feature", geometry: {type: "MultiPoint", coordinates: [[5, 8], [7, 3], ...]}}
 ```
 
 Where `poly` is a GeoJSON Polygon, and `isects` is a GeoJSON MultiPoint.
