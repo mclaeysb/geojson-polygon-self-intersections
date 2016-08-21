@@ -3,7 +3,7 @@ var rbush = require('rbush');
 
 module.exports = function(feature, filterFn, useSpatialIndex) {
   if (feature.geometry.type != "Polygon") throw new Error("The input feature must be a Polygon");
-  if (!useSpatialIndex) useSpatialIndex = 1;
+  if (useSpatialIndex == undefined) useSpatialIndex = 1;
 
   var coord = feature.geometry.coordinates;
 
