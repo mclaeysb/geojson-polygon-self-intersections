@@ -55,8 +55,17 @@ module.exports = function(feature, filterFn, useSpatialIndex) {
     var isect = intersect(start0, end0, start1, end1);
 
     if (isect == null) return; // discard parallels and coincidence
-    var frac0 = (isect[0]-start0[0])/(end0[0]-start0[0]);
-    var frac1 = (isect[0]-start1[0])/(end1[0]-start1[0]);
+    frac0, frac1;
+    if (end0[0] != start0[0]) {
+      var frac0 = (isect[0]-start0[0])/(end0[0]-start0[0]);
+    } else {
+      var frac0 = (isect[1]-start0[1])/(end0[1]-start0[1]);
+    };
+    if (end1[0] != start1[0]) {
+      var frac1 = (isect[0]-start1[0])/(end1[0]-start1[0]);
+    } else {
+      var frac1 = (isect[1]-start1[1])/(end1[1]-start1[1]);
+    };
     if (frac0 >= 1 || frac0 <= 0 || frac1 >= 1 || frac1 <= 0) return; // require segment intersection
 
     var key = isect;
