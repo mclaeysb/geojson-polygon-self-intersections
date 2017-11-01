@@ -39,13 +39,25 @@ Alternatively, you can use a filter function to specify the output. You have acc
 - idem for the second edge: `ring1`, `edge1`, `start1`, `end1`, `frac1`
 - boolean indicating if the intersection is unique: `unique`
 
-Finally, you can set a boolean variable to specify if a spatial index should be used to filter for possible intersections.
+Finally, you can pass an option object to control the behaviour of the algorithm.
+The following options are supported:
+
+|Option|Description|
+|------|-----------|
+| `useSpatialIndex` | Whether a spatial index should be used to filter for possible intersections. Default: `true` |
+| `reportVertexOnVertex` | If the same vertex (or almost the same vertex) appears more than once in the input, should this be reported as an intersection? Default: `false`|
+| `reportVertexOnEdge` | If a vertex lies (almost) exactly on an edge segment, should this be reported as an intersection? Default: `false` |
+| `epsilon` | It is almost never a good idea to compare floating point numbers for identity. Therefor, if we say "the same vertex" or "exactly on an edge segment", we need to define how "close" is "close enough". Note that the value is *not* used as an euclidian distance but always relative to the length of some edge segment. Default: `0.0000001`|
 
 Together, this may look like so:
 
 ```javascript
-var useSpatialIndex = 0;
-var isects = gpsi(poly, function filterFn(isect, ring0, edge0, start0, end0, frac0, ring1, edge1, start1, end1, frac1, unique){return [isect, frac0, frac1];}, useSpatialIndex);
+var options = {
+  useSpatialIndex:false
+};
+var isects = gpsi(poly, function filterFn(isect, ring0, edge0, start0, end0, frac0, ring1, edge1, start1, end1, frac1, unique){return [isect, frac0, frac1];}, options);
 
 // isects = [[[5, 8], 0.4856, 0.1865]], [[[7, 3], 0.3985, 0.9658]], ...]
 ```
+For backwards compatibility, if you pass anything other than an object, it will be interpreted as the value of the
+`useSpatialIndex`-option.
