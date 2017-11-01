@@ -74,7 +74,10 @@ module.exports = function(feature, filterFn, options0) {
   function isBoundaryCase(frac){
     var e2 = options.epsilon * options.epsilon;
     return e2 >= (frac-1)*(frac-1) || e2 >= frac*frac;
-  };
+  }
+  function isOutside(frac){
+    return frac < 0 - options.epsilon || frac > 1 + options.epsilon;
+  }
   // Function to check if two edges intersect and add the intersection to the output
   function ifIsectAddToOutput(ring0, edge0, ring1, edge1) {
     var start0 = coord[ring0][edge0];
@@ -99,7 +102,9 @@ module.exports = function(feature, filterFn, options0) {
 
     // There are roughly three cases we need to deal with.
     // 1. If at least one of the fracs lies outside [0,1], there is no intersection.
-    if (frac0 > 1 || frac0 < 0 || frac1 > 1 || frac1 < 0) return; // require segment intersection
+    if (isOutside(frac0) || isOutside(frac1)) {
+      return; // require segment intersection
+    }
 
     // 2. If both are either exactly 0 or exactly 1, this is not an intersection but just
     // two edge segments sharing a common vertex.
@@ -107,7 +112,7 @@ module.exports = function(feature, filterFn, options0) {
       if(! options.reportVertexOnVertex) return;
     }
 
-    //  If only one of the fractions is exactly 0 or 1, this is
+    // 3. If only one of the fractions is exactly 0 or 1, this is
     // a vertex-on-edge situation.
     if (isBoundaryCase(frac0) || isBoundaryCase(frac1)){
       if(! options.reportVertexOnEdge) return;
