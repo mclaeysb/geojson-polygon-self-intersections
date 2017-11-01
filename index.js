@@ -29,7 +29,6 @@ module.exports = function(feature, filterFn, options0) {
   }
 
   if (feature.geometry.type != "Polygon") throw new Error("The input feature must be a Polygon");
-  if (useSpatialIndex == undefined) useSpatialIndex = 1;
 
   var coord = feature.geometry.coordinates;
 
@@ -72,7 +71,7 @@ module.exports = function(feature, filterFn, options0) {
   return output;
 
   // true if frac is (almost) 1.0 or 0.0
-  var isBoundaryCase = function(frac){
+  function isBoundaryCase(frac){
     var e2 = options.epsilon * options.epsilon;
     return e2 >= (frac-1)*(frac-1) || e2 >= frac*frac;
   };
