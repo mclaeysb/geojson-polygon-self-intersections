@@ -47,7 +47,7 @@ The following options are supported:
 | `useSpatialIndex` | Whether a spatial index should be used to filter for possible intersections. Default: `true` |
 | `reportVertexOnVertex` | If the same vertex (or almost the same vertex) appears more than once in the input, should this be reported as an intersection? Default: `false`|
 | `reportVertexOnEdge` | If a vertex lies (almost) exactly on an edge segment, should this be reported as an intersection? Default: `false` |
-| `epsilon` | It is almost never a good idea to compare floating point numbers for identity. Therefor, if we say "the same vertex" or "exactly on an edge segment", we need to define how "close" is "close enough". Note that the value is *not* used as an euclidian distance but always relative to the length of some edge segment. Default: `0.0000001`|
+| `epsilon` | It is almost never a good idea to compare floating point numbers for identity. Therefor, if we say "the same vertex" or "exactly on an edge segment", we need to define how "close" is "close enough". Note that the value is *not* used as an euclidian distance but always relative to the length of some edge segment. Default: `0`|
 
 Together, this may look like so:
 

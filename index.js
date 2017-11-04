@@ -15,7 +15,7 @@ var merge = function(){
 };
 defaults = {
   useSpatialIndex: true,
-  epsilon: 0.0000001,
+  epsilon: 0,
   reportVertexOnVertex: false,
   reportVertexOnEdge: false
 };
