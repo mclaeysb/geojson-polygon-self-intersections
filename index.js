@@ -1,16 +1,41 @@
 // Find self-intersections in geojson polygon (possibly with interior rings)
 var rbush = require('rbush');
 
-module.exports = function(feature, filterFn, useSpatialIndex) {
+
+var merge = function(){
+  var output = {};
+  Array.prototype.slice.call(arguments).forEach(function(arg){
+    if(arg){
+      Object.keys(arg).forEach(function(key){
+        output[key]=arg[key];
+      });
+    }
+  });
+  return output;
+};
+defaults = {
+  useSpatialIndex: true,
+  epsilon: 0,
+  reportVertexOnVertex: false,
+  reportVertexOnEdge: false
+};
+
+module.exports = function(feature, filterFn, options0) {
+  var options;
+  if("object" === typeof options0){
+    options = merge(defaults,options0);
+  } else {
+    options = merge(defaults,{useSpatialIndex:options0});
+  }
+
   if (feature.geometry.type != "Polygon") throw new Error("The input feature must be a Polygon");
-  if (useSpatialIndex == undefined) useSpatialIndex = 1;
 
   var coord = feature.geometry.coordinates;
 
   var output = [];
   var seen = {};
 
-  if (useSpatialIndex) {
+  if (options.useSpatialIndex) {
     var allEdgesAsRbushTreeItems = [];
     for (var ring0 = 0; ring0 < coord.length; ring0++) {
       for (var edge0 = 0; edge0 < coord[ring0].length-1; edge0++) {
@@ -23,7 +48,7 @@ module.exports = function(feature, filterFn, useSpatialIndex) {
 
   for (var ring0 = 0; ring0 < coord.length; ring0++) {
     for (var edge0 = 0; edge0 < coord[ring0].length-1; edge0++) {
-      if (useSpatialIndex) {
+      if (options.useSpatialIndex) {
         var bboxOverlaps = tree.search(rbushTreeItem(ring0, edge0));
         bboxOverlaps.forEach(function(bboxIsect) {
           var ring1 = bboxIsect.ring;
@@ -45,6 +70,14 @@ module.exports = function(feature, filterFn, useSpatialIndex) {
   if (!filterFn) output = {type: "Feature", geometry: {type: "MultiPoint", coordinates: output}};
   return output;
 
+  // true if frac is (almost) 1.0 or 0.0
+  function isBoundaryCase(frac){
+    var e2 = options.epsilon * options.epsilon;
+    return e2 >= (frac-1)*(frac-1) || e2 >= frac*frac;
+  }
+  function isOutside(frac){
+    return frac < 0 - options.epsilon || frac > 1 + options.epsilon;
+  }
   // Function to check if two edges intersect and add the intersection to the output
   function ifIsectAddToOutput(ring0, edge0, ring1, edge1) {
     var start0 = coord[ring0][edge0];
@@ -66,7 +99,24 @@ module.exports = function(feature, filterFn, useSpatialIndex) {
     } else {
       var frac1 = (isect[1]-start1[1])/(end1[1]-start1[1]);
     };
-    if (frac0 >= 1 || frac0 <= 0 || frac1 >= 1 || frac1 <= 0) return; // require segment intersection
+
+    // There are roughly three cases we need to deal with.
+    // 1. If at least one of the fracs lies outside [0,1], there is no intersection.
+    if (isOutside(frac0) || isOutside(frac1)) {
+      return; // require segment intersection
+    }
+
+    // 2. If both are either exactly 0 or exactly 1, this is not an intersection but just
+    // two edge segments sharing a common vertex.
+    if (isBoundaryCase(frac0) && isBoundaryCase(frac1)){
+      if(! options.reportVertexOnVertex) return;
+    }
+
+    // 3. If only one of the fractions is exactly 0 or 1, this is
+    // a vertex-on-edge situation.
+    if (isBoundaryCase(frac0) || isBoundaryCase(frac1)){
+      if(! options.reportVertexOnEdge) return;
+    }
 
     var key = isect;
     var unique = !seen[key];
