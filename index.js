@@ -13,7 +13,7 @@ var merge = function(){
   });
   return output;
 };
-defaults = {
+var defaults = {
   useSpatialIndex: true,
   epsilon: 0,
   reportVertexOnVertex: false,
