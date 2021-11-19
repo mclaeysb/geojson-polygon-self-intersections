@@ -42,7 +42,7 @@ module.exports = function(feature, filterFn, options0) {
         allEdgesAsRbushTreeItems.push(rbushTreeItem(ring0, edge0))
       }
     }
-    var tree = rbush();
+    var tree = new rbush();
     tree.load(allEdgesAsRbushTreeItems);
   }
 
