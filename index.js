@@ -22,10 +22,14 @@ var defaults = {
 
 module.exports = function(feature, filterFn, options0) {
   var options;
-  if("object" === typeof options0){
+  if(options0 === undefined){
+    options = defaults;
+  } else if("object" === typeof options0){
     options = merge(defaults,options0);
-  } else {
+  } else if("boolean" === typeof options0){
     options = merge(defaults,{useSpatialIndex:options0});
+  } else {
+    throw new Error("Unrecognised options argument");
   }
 
   if (feature.geometry.type != "Polygon") throw new Error("The input feature must be a Polygon");
