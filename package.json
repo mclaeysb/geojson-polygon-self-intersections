@@ -1,27 +1,64 @@
 {
   "name": "geojson-polygon-self-intersections",
-  "version": "1.2.2",
-  "main": "index.js",
+  "version": "2.0.0",
+  "author": {
+    "name": "Manuel Claeys Bouuaert",
+    "email": "manuel.claeys.b@gmail.com",
+    "url": "https://manuelclaeysbouuaert.be"
+  },
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mclaeysb/geojson-polygon-self-intersections.git"
   },
+  "homepage": "https://github.com/mclaeysb/geojson-polygon-self-intersections#readme",
+  "bugs": {
+    "url": "https://github.com/mclaeysb/geojson-polygon-self-intersections/issues"
+  },
+  "description": "Find self-intersections in geojson polygon (possibly with interior rings)",
   "keywords": [
     "polygon",
     "complex polygon",
     "simple polygon",
     "self-intersection"
   ],
-  "author": {
-    "name": "Manuel Claeys Bouuaert"
-  },
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/mclaeysb/geojson-polygon-self-intersections/issues"
+  "scripts": {
+    "watch": "tsc --watch",
+    "build": "tsc",
+    "test": "NODE_ENV=test vitest run",
+    "lint": "prettier --check src test && eslint src test --ext .js,.ts",
+    "format": "prettier --write src test",
+    "types": "tsc --noEmit"
   },
   "dependencies": {
-    "rbush": "^2.0.1"
+    "rbush": "4.0.1"
   },
-  "devDependencies": {},
-  "homepage": "https://github.com/mclaeysb/geojson-polygon-self-intersections#readme"
+  "devDependencies": {
+    "@eslint/eslintrc": "3.3.3",
+    "@eslint/js": "9.39.2",
+    "@types/geojson": "7946.0.16",
+    "@types/rbush": "4.0.0",
+    "eslint": "9.39.2",
+    "eslint-config-prettier": "10.1.8",
+    "globals": "16.5.0",
+    "prettier": "3.7.4",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.50.0",
+    "vitest": "4.0.16"
+  }
 }
