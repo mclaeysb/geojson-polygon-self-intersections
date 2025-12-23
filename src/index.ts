@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Position } from 'geojson'
+import { Feature, Polygon, Position } from 'geojson'
 import RBush from 'rbush'
 
 type CallbackFunctionInput = {
@@ -45,43 +45,44 @@ const defaultOptions: Options = {
  * Return a polygon's self-intersections
  *
  * @export
- * @param {Position[][]} polygon
+ * @param {Feature<Polygon>} polygon GeoJSON Polygon
  * @param {?(Partial<Options>)} [partialOptions] Option
  * @returns {any[]} Array of self-intersection points (or any type produced by the callback function)
  */
 export default function gpsi(
-  polygon: Position[][],
+  polygon: Feature<Polygon>,
   partialOptions?: Partial<Options>
 ): any[] {
   const options = mergeOptions(defaultOptions, partialOptions)
 
+  const coords = polygon.geometry.coordinates
   const output: any[] = []
   const seen: Record<string, any> = {}
 
   let tree: any
   if (options.useSpatialIndex) {
     const allEdgesAsRbushTreeItems = []
-    for (let ring0 = 0; ring0 < polygon.length; ring0++) {
-      for (let edge0 = 0; edge0 < polygon[ring0].length - 1; edge0++) {
-        allEdgesAsRbushTreeItems.push(rbushTreeItem(polygon, ring0, edge0))
+    for (let ring0 = 0; ring0 < coords.length; ring0++) {
+      for (let edge0 = 0; edge0 < coords[ring0].length - 1; edge0++) {
+        allEdgesAsRbushTreeItems.push(rbushTreeItem(coords, ring0, edge0))
       }
     }
     tree = new RBush<RBushTreeItem>()
     tree.load(allEdgesAsRbushTreeItems)
   }
 
-  for (let ring0 = 0; ring0 < polygon.length; ring0++) {
-    for (let edge0 = 0; edge0 < polygon[ring0].length - 1; edge0++) {
+  for (let ring0 = 0; ring0 < coords.length; ring0++) {
+    for (let edge0 = 0; edge0 < coords[ring0].length - 1; edge0++) {
       if (options.useSpatialIndex) {
-        const bboxOverlaps = tree.search(rbushTreeItem(polygon, ring0, edge0))
+        const bboxOverlaps = tree.search(rbushTreeItem(coords, ring0, edge0))
         bboxOverlaps.forEach(function (bboxIsect: RBushTreeItem) {
           const ring1 = bboxIsect.ring
           const edge1 = bboxIsect.edge
           ifIsectAddToOutput(ring0, edge0, ring1, edge1)
         })
       } else {
-        for (let ring1 = 0; ring1 < polygon.length; ring1++) {
-          for (let edge1 = 0; edge1 < polygon[ring1].length - 1; edge1++) {
+        for (let ring1 = 0; ring1 < coords.length; ring1++) {
+          for (let edge1 = 0; edge1 < coords[ring1].length - 1; edge1++) {
             // TODO: speedup possible if only interested in unique: start last two loops at ring0 and edge0+1
             ifIsectAddToOutput(ring0, edge0, ring1, edge1)
           }
@@ -97,10 +98,10 @@ export default function gpsi(
     ring1: number,
     edge1: number
   ) {
-    const start0 = polygon[ring0][edge0]
-    const end0 = polygon[ring0][edge0 + 1]
-    const start1 = polygon[ring1][edge1]
-    const end1 = polygon[ring1][edge1 + 1]
+    const start0 = coords[ring0][edge0]
+    const end0 = coords[ring0][edge0 + 1]
+    const start1 = coords[ring1][edge1]
+    const end1 = coords[ring1][edge1 + 1]
 
     const isect = intersect(start0, end0, start1, end1)
 

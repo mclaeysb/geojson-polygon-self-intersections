@@ -9,18 +9,16 @@ import type { Feature, Polygon } from 'geojson'
 
 describe('gpsi function', () => {
   it('should find the correct intersections', () => {
-    expect(
-      gpsi((complexPolygon as Feature<Polygon>).geometry.coordinates)
-    ).toStrictEqual(isects)
+    expect(gpsi(complexPolygon as Feature<Polygon>)).toStrictEqual(isects)
   })
 
   it('should give the same results whether or not using spatial index', () => {
     expect(
-      gpsi((complexPolygon as Feature<Polygon>).geometry.coordinates, {
+      gpsi(complexPolygon as Feature<Polygon>, {
         useSpatialIndex: false
       }).sort()
     ).toStrictEqual(
-      gpsi((complexPolygon as Feature<Polygon>).geometry.coordinates, {
+      gpsi(complexPolygon as Feature<Polygon>, {
         useSpatialIndex: true
       }).sort()
     )
@@ -28,7 +26,7 @@ describe('gpsi function', () => {
 
   it('should apply the callback function if passed', () => {
     expect(
-      gpsi((complexPolygon as Feature<Polygon>).geometry.coordinates, {
+      gpsi(complexPolygon as Feature<Polygon>, {
         callbackFunction: ({ isect, frac0, frac1 }) => {
           return [isect, frac0, frac1]
         }

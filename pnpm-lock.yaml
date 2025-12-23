@@ -8,19 +8,19 @@ importers:
 
   .:
     dependencies:
-      '@types/geojson':
-        specifier: ^7946.0.16
-        version: 7946.0.16
       rbush:
         specifier: 4.0.1
         version: 4.0.1
     devDependencies:
       '@eslint/eslintrc':
-        specifier: ^3.3.3
+        specifier: 3.3.3
         version: 3.3.3
       '@eslint/js':
-        specifier: ^9.39.2
+        specifier: 9.39.2
         version: 9.39.2
+      '@types/geojson':
+        specifier: 7946.0.16
+        version: 7946.0.16
       '@types/rbush':
         specifier: 4.0.0
         version: 4.0.0
@@ -28,10 +28,10 @@ importers:
         specifier: 9.39.2
         version: 9.39.2
       eslint-config-prettier:
-        specifier: ^10.1.8
+        specifier: 10.1.8
         version: 10.1.8(eslint@9.39.2)
       globals:
-        specifier: ^16.5.0
+        specifier: 16.5.0
         version: 16.5.0
       prettier:
         specifier: 3.7.4
